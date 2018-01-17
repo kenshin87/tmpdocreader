@@ -1,0 +1,71 @@
+安装说明
+
+0. 切换到edxapp用户，进入/edx/app/edxapp目录并激活虚拟环境:
+
+	sudo -H -u edxapp bash
+	source /edx/app/edxapp/edxapp_env
+	cd /edx/app/edxapp/edx-platform
+
+1. 该文档浏览功能, 依赖于baidu的bos SDK，因此需要安装baidubce.
+        pip install baidubce==0.8.3
+
+2. 安装文档浏览：
+	git clone https://github.com/elitemc/docReader.git
+        mv /edx/app/edxapp/docReader/docreaderxblock  /edx/app/edxapp;
+	pip install -e docreaderxblock;
+
+3. 程序会从django.conf.settings中读取BAIDU_AK, BAIDU_SK等2个变量，如果变量不存在，请确保/edx/app/edxapp/docreaderxblock/docreaderxblock/doc/auth_keys.py里面的百度AK, SK均无误。
+
+4. 可以修改/edx/app/edxapp/edx-platform/common/lib/xmodule/xmodule/course_module.py这个文件，使得每个课程默认都使用该xblock:
+
+   在CourseFields类中，修改advanced_modules["default"]列表，加上"docreaderxblock"一项，即
+
+	    advanced_modules = List(
+		display_name=_("Advanced Module List"),
+		help=_("Enter the names of the advanced modules to use in your course."),
+		scope=Scope.settings,
+		default=[
+		    "xxxx1xblock",
+		    "xxxx2xblock",
+			...,
+		    "docreaderxblock",    # 在此增加新的xblock, 允许该xblock默认打开.
+		]
+	    )
+
+
+manual:
+
+0: switch to user "edxapp", change directory to "/edx/app/edxapp" and activate the virtual environment by the following commands:
+
+	sudo -H -u edxapp bash
+	source /edx/app/edxapp/edxapp_env
+	cd /edx/app/edxapp/edx-platform
+
+1: The functionality of the xblock relies on python SDK of baidu, so baidubce is required for the xblock:
+	pip install baidubce==0.8.3
+
+2: install the docreaderxblock xblock:
+	git clone https://github.com/elitemc/docReader.git
+        mv /edx/app/edxapp/docReader/docreaderxblock  /edx/app/edxapp;
+	pip install -e docreaderxblock;
+
+3. The block will get "BAIDU_AK" and "BAIDU_SK" from django.conf.settings. If The 2 variables are not exist, then make sure that the file "/edx/app/edxapp/docreaderxblock/docreaderxblock/doc/auth_keys.py" contains the correct AK and SK.
+
+4. By chaging the file of "/edx/app/edxapp/edx-platform/common/lib/xmodule/xmodule/course_module.py", the xblock can be turned on for every course as default configuration:
+
+   #/edx/app/edxapp/edx-platform/common/lib/xmodule/xmodule/course_module.py
+   locate the class of CourseFields，and modify its field "advanced_modules"，add the "docreaderxblock" term to its "default" list as following:
+
+	    advanced_modules = List(
+		display_name=_("Advanced Module List"),
+		help=_("Enter the names of the advanced modules to use in your course."),
+		scope=Scope.settings,
+		default=[
+		    "xxxx1xblock",
+		    "xxxx2xblock",
+			...,
+		    "docreaderxblock",    # This is the added term.
+		]
+	    )
+	
+	
