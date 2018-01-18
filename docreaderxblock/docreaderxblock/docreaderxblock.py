@@ -302,7 +302,7 @@ class DocReaderXBlock(XBlock):
         return self.runtime.handler_url(self, "download_proxy")
 
     def get_baidu_download_link(self):
-        return "http://" + self.bucket_name + ".bj.bcebos.com/" + self.systemGeneratedRandomNameExtension
+        return "https://" + self.bucket_name + ".bj.bcebos.com/" + self.systemGeneratedRandomNameExtension
 
     def get_baidu_view_proxy_link(self):
         return self.runtime.handler_url(self, "baidu_view_proxy")
@@ -880,5 +880,12 @@ class DocReaderXBlock(XBlock):
                 </vertical_demo>
              """),
         ]
+
+
+
+
+
+
+
 
 
