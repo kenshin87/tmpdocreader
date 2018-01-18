@@ -155,7 +155,7 @@ function client_Temp(sts_obj)
             }).catch(
             function (err) 
             {
-                console.error(err);
+                console.log(err);
             });        
     }
     return obj;
