@@ -107,7 +107,7 @@ function DocReaderXBlock(runtime, element)
 
     function set_height()
     {
-        var name = $(".systemGeneratedRandomNameExtension", element).val();
+        var name = $(".system_generated_random_name_extension", element).val();
         if (name != "")
         {
             var name_array = name.split(".");
@@ -127,7 +127,7 @@ function DocReaderXBlock(runtime, element)
     {
         console.log("enter testset_height");
 
-        var name = $(".systemGeneratedRandomNameExtension", element).text();
+        var name = $(".system_generated_random_name_extension", element).text();
         if (name != "")
         {
             console.log("--testset_height has name");

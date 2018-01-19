@@ -1,7 +1,10 @@
 <!-- 
     <p>baidu_doc_id {self.baidu_doc_id}</p>
     <p class = "bucket_name">{self.bucket_name}</p> 
+    <input  value= {self.user_defined_name} type="text">   
+    <p >{self.user_defined_name}</p>   
 -->
+
 
 <!--[if lt IE 8]><script src="https://websdk.cdn.bcebos.com/bos/json3/lib/json3.min.js"></script><![endif]-->
 <!--[if lt IE 9]><script src="https://websdk.cdn.bcebos.com/bos/js-polyfills/es5.js"></script><![endif]-->
@@ -17,67 +20,22 @@
      <li class="field comp-setting-entry is-set">
         <div class="wrapper-comp-setting">
            <label class="label setting-label" for="firstxblockTeaDisplayName_name">文件名</label>
-          <input class="input setting-input firstXBlockTeaDisplayName" value= {self.user_defined_name} type="text">    
+
+          <input class="input setting-input firstXBlockTeaDisplayName" value= "{{user_defined_name}}"  type="text">  
+
           <p><span class="tip setting-help noFileNameWarning"></span></p>                                         
           <input class="input setting-input systemGeneratedRandomNameTea" value= {self.systemGeneratedRandomName} type="text" hidden>  
-
           <input class="input setting-input baidu_doc_id" value= {self.baidu_doc_id} type="text" hidden>
           <br/>
 
-<!--
-             <input class="increment_countcontent" value= countcontent type="button" >  
-            <input  value= {self.countcontent} type="text" > 
-            <br/>
-            <input class="increment_countsettings" value= countsettings type="button" >  
-            <input  value= {self.countsettings} type="text" > 
-            <br/>
-            <input class="increment_countuser_state" value= countuser_state type="button" >  
-            <input  value= {self.countuser_state} type="text" > 
-            <br/>
-            <input class="increment_countpreferences" value= countpreferences type="button" >  
-            <input  value= {self.countpreferences} type="text" > 
-            <br/>
-            <input class="increment_countuser_info" value= countuser_info type="button" >  
-            <input  value= {self.countuser_info} type="text" > 
-            <br/>
-            <input class="increment_countuser_state_summary" value= countuser_state_summary type="button" >  
-            <input  value= {self.countuser_state_summary} type="text" > 
-            <br/>
-            <input class="full_access_change_proxy" value= full_access_change_proxy type="button" >
-            <br/> 
--->
+        <input class = "bos_bucket_name"  value = "{{bos_bucket_name}}"  hidden/>
+        <input class = "bos_sts_ak" value = "" hidden/>
+        <input class = "bos_sts_sk" value = "" hidden/>
+        <input class = "bos_sts_token" value = "" hidden/>
+        <input class = "bos_endpoint" value = "https://bj.bcebos.com" hidden/>
+        <input class = "python_random_name" value = "" hidden/>
+        <input class = "bos_sts_handler" value = "" hidden/>
 
-<input class = "bos_bucket_name" value = "testing-yingli" hidden/>
-<input class = "bos_ak" value = "836edb1379674e10bc46db130c11fecd" hidden/>
-<input class = "bos_sk" value = "28f6751772024d54a90daceb417ff320" hidden/>
-<input class = "bos_sts_ak" value = "" hidden/>
-<input class = "bos_sts_sk" value = "" hidden/>
-<input class = "bos_sts_token" value = "" hidden/>
-<input class = "bos_endpoint" value = "https://bj.bcebos.com" hidden/>
-<input class = "python_random_name" value = "" hidden/>
-<input class = "bos_sts_handler" value = "" hidden/>
-
-<!-- 
-
-baidu_buttons
-bos_bucket_name
-<input class = "bos_bucket_name" value = "testing-yingli" />
-bos_ak
-<input class = "bos_ak" value = "836edb1379674e10bc46db130c11fecd" />
-bos_sk
-<input class = "bos_sk" value = "28f6751772024d54a90daceb417ff320" />
-bos_sts_ak
-<input class = "bos_sts_ak" value = "" />
-bos_sts_sk
-<input class = "bos_sts_sk" value = "" />
-bos_sts_token
-<input class = "bos_sts_token" value = ""/>
-bos_endpoint
-<input class = "bos_endpoint" value = "http://bj.bcebos.com"/>
-python_random_name
-<input class = "python_random_name" value = ""/>
-
- -->
     </div>
     </li>
 
@@ -88,13 +46,12 @@ python_random_name
             <input type="file" id="file" >
             <input type="submit" id = "baidu_submit" hidden/>
             <div>
-            <label class="label setting-label">上传进度</label>
-            <div>
+            <div id = "progress_bar_div" style = "display:none">
                 <p id = "progress_bar_p_up"   class = "progress_bar_p_up"><span id = "progress_value_span" class = "progress_value_span">0.00</span></p>
                 <p id = "progress_bar_p_down"   class = "progress_bar_p_down"></p>
             </div>
             </div>
-            <p><span class="tip setting-help noUploadWarning">只支持ppt, excel, word, pdf文件的上传。</span></p>            
+            <p><span class="tip setting-help no_upload_warning">只支持ppt, excel, word, pdf文件的上传。</span></p>            
 
 
         </div>
@@ -132,10 +89,46 @@ python_random_name
     </div>
 </form>
 
-
-<!--     <input type="file" id="file" > -->
-<!-- <button type="submit" id = "baidu_submit">开始上传</button> -->
-
 </ul>
-
 </div>
+
+<!-- 
+    <input class="increment_countcontent" value= countcontent type="button" >  
+    <input  value= {self.countcontent} type="text" > 
+    <br/>
+    <input class="increment_countsettings" value= countsettings type="button" >  
+    <input  value= {self.countsettings} type="text" > 
+    <br/>
+    <input class="increment_countuser_state" value= countuser_state type="button" >  
+    <input  value= {self.countuser_state} type="text" > 
+    <br/>
+    <input class="increment_countpreferences" value= countpreferences type="button" >  
+    <input  value= {self.countpreferences} type="text" > 
+    <br/>
+    <input class="increment_countuser_info" value= countuser_info type="button" >  
+    <input  value= {self.countuser_info} type="text" > 
+    <br/>
+    <input class="increment_countuser_state_summary" value= countuser_state_summary type="button" >  
+    <input  value= {self.countuser_state_summary} type="text" > 
+    <br/>
+    <input class="full_access_change_proxy" value= full_access_change_proxy type="button" >
+    <br/> 
+
+
+    baidu_buttons
+    bos_bucket_name
+    <input class = "bos_bucket_name" value = "testing-yingli" />
+    bos_ak
+    <input class = "bos_ak" value = "836edb1379674e10bc46db130c11fecd" />
+    bos_sk
+    <input class = "bos_sk" value = "28f6751772024d54a90daceb417ff320" />
+    bos_sts_ak
+    <input class = "bos_sts_ak" value = "" />
+    bos_sts_sk
+    <input class = "bos_sts_sk" value = "" />
+    bos_sts_token
+    <input class = "bos_sts_token" value = ""/>
+    bos_endpoint
+    <input class = "bos_endpoint" value = "http://bj.bcebos.com"/>
+    python_random_name
+    <input class = "python_random_name" value = ""/>

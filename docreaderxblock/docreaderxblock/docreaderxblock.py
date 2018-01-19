@@ -7,7 +7,6 @@ from xblock.fields import Scope, Integer, String, Boolean
 from xblock.fragment import Fragment
 
 import os
-import six
 import urlparse
 import json
 import time
@@ -15,7 +14,6 @@ import random
 from functools import partial
 
 from webob.response import Response
-from django.shortcuts import HttpResponse
 from django.shortcuts import render
 from django.template import Context, Template
 from django.conf import settings
@@ -32,14 +30,12 @@ from .reader_settings import ALLOWED_UPLOAD_FILE_TYPE
 from .reader_settings import MAX_UPLOAD_FILE_SIZE
 from .reader_settings import get_address
 from .reader_settings import doc_fs
-from .reader_settings import reverse_wrapper
 
-
+from .doc.doc_api_wrapper import DocWrapper
 from .doc.bos_api_wrapper import upload_file_to_bos
 from .doc.bos_api_wrapper import check_file_from_bos
 from .doc.bos_api_wrapper import get_sts_dict
 from .doc.bos_api_wrapper import get_document_link_string
-from .doc.doc_api_wrapper import DocWrapper
 from .reader_settings import BUCKET_NAME
 
 import logging
@@ -50,6 +46,7 @@ logger = get_correct_logger()
 class FileStoreAPI(object):
     """
         provides a interface for storing the file_name and abs_path for a uploaded file.
+        2018.01.16 updated: add baidu file service interface into the class
     """
     def __init__(self, random_time_name):
         abs_path = FileStoreAPI.get_abs_path(random_time_name)
@@ -63,18 +60,6 @@ class FileStoreAPI(object):
     }
 
     @staticmethod
-    def get_baidu_file_info_dict_static(dict_obj):
-
-        file_name = dict_obj["file_name"]
-        abs_path = get_document_link_string(file_name)
-
-        return {
-            "file_name": file_name,
-            "abs_path": abs_path,
-    }
-
-
-    @staticmethod
     def get_file_info_dict_static(dict_obj):
 
         file_name = dict_obj["file_name"]
@@ -86,7 +71,28 @@ class FileStoreAPI(object):
     }
 
     @staticmethod
+    def get_baidu_file_info_dict_static(dict_obj):
+
+        """
+            return the actual address of the file in baidu bos, depends on function "get_document_link_string"
+        """
+
+        file_name = dict_obj["file_name"]
+        abs_path = get_document_link_string(file_name)
+
+        return {
+            "file_name": file_name,
+            "abs_path": abs_path,
+    }
+
+    @staticmethod
     def get_abs_path(any_path):
+        """
+        based on the django file system, returns the absolute path of the file.
+        :param any_path: file name or relative or abs path of the file.
+        :return: abs path of the file.
+        """
+
         if not (type(any_path) == str or type(any_path) == unicode):
             logger.error("docreaderxblock FileStoreAPI.get_abs_path receives an non str/unicode argument.")
             raise TypeError("FileStoreAPI.get_system_path receives a non string arg.")
@@ -98,27 +104,14 @@ class FileStoreAPI(object):
             else:
                 logger.error("docreaderxblock FileStoreAPI.get_abs_path file not exists")
                 raise OSError("file does not exist.")
-    """
-    @staticmethod
-    def get_abs_path(any_path):
-        if not (type(any_path) == str or type(any_path) == unicode):
-            logger.error("docreaderxblock FileStoreAPI.get_abs_path receives an non str/unicode argument.")
-            raise TypeError("FileStoreAPI.get_system_path receives a non string arg.")
-        else:
-            file_name = any_path.split("/")[-1]
-            abs_path = os.path.join(MEDIA_ROOT, file_name)
-            if os.path.isfile(abs_path):
-                return abs_path
-            else:
-                logger.error("docreaderxblock FileStoreAPI.get_abs_path file not exists")
-                raise OSError("file does not exist.")
-    """
+
+
 class UploadDownloadAPI(object):
 
     @staticmethod
     def status_helper(status_json):
-        responseDict = json.loads(status_json._container[0])
-        file_url = responseDict["result"]["file_url"]
+        response_dict = json.loads(status_json._container[0])
+        file_url = response_dict["result"]["file_url"]
         return file_url
 
     @staticmethod
@@ -128,7 +121,7 @@ class UploadDownloadAPI(object):
     @staticmethod
     def upload(request):
         """
-            view that handles file upload via Ajax
+            view that handles file upload via Ajax, it employs the default DJUS to save the file in the location specified by doc_fs.
         """
 
         # check upload permission
@@ -192,6 +185,12 @@ class UploadDownloadAPI(object):
 
     @staticmethod
     def download(request, dict_obj):
+        """
+        This handles the file downloading via DJUS.
+        :param request:
+        :param dict_obj:
+        :return: the request of file blob.
+        """
         BLOCK_SIZE = 8 * 1024
         path = dict_obj["abs_path"]
         try:
@@ -202,12 +201,10 @@ class UploadDownloadAPI(object):
             pass
 
 
-from .doc.doc_api_wrapper import DocWrapper
-
-
 class CombinedDocGenerator(DocWrapper):
     """
-        The reason why we need this class is that, we need to just get the status for building doc.
+        The reason why we need this class is that, at this stage we just need to get the status for building doc.
+    However, considering the need of storing doc id, so here we pass the storing process to DocReaderXBlockChanger.store_doc_id(args).
     In this case, we just wrap storing doc id into another function
     """
     @staticmethod
@@ -222,6 +219,7 @@ class CombinedDocGenerator(DocWrapper):
             return True
         except:
             return False
+
 
 class DocReaderXBlockChanger(object):
 
@@ -241,7 +239,7 @@ class DocReaderXBlockChanger(object):
         abs_path  = dict_obj["abs_path"]
         systemGeneratedRandomName = file_name.split(".")[0]
         self_obj.systemGeneratedRandomName = systemGeneratedRandomName
-        self_obj.systemGeneratedRandomNameExtension = file_name
+        self_obj.system_generated_random_name_extension = file_name
         self_obj.systemGeneratedRandomNameAbsPath = abs_path
 
 
@@ -278,35 +276,32 @@ class DocReaderXBlockChanger(object):
 
 class DocReaderXBlock(XBlock):
     """
-    TO-DO: document what your XBlock does.
-    """
-
-    """
         The issue here is that, unless we break into class Xblock, else we can only write something inside this framework.
     That is, we cannot use __init__ to initialize instance variables, else there might be a VersionConflict exception.
-    
         Another issue is that, the class variables of Scopes, cannot be shared between lms and studio, which means that 
-    we need to use a pair of  variables including 
+    we need to use a pair of variables including
             Tea, 
             Stu
-    if we want to change a variable both from lms and studio side. 
-    
-        For example, here we need to initialize a dynamic variable of the iframe's html, however, since it is dynamic, 
-    so for each different block, the address here is not the same. In this case, we need to use a function to grab the 
-    value each time we create a new block. This is by given the block a user_settings scope since when we create the xblock, 
-        However, when the teacher from studio want to change the value, it becomes impossible.
-    
+    if we want to change a variable both from lms and studio side.
+        For example, here we need to initialize a dynamic variable as the src of the iframe, however, since it is dynamic,
+    so for each different block, the variable is different. In this case, we need to use a function to grab the value
+    each time we create a new block. This is by given the block a user_settings scope, that is a student scope variable,
+    since when we create the xblock, we usually don't enter the edit page that this value can only be initialize by a
+    student editable field.
+        However, when the teacher enters the edit page and wants to change the value, since the variable is not shared,
+    so it become impossible for the teacher to edit the student scope variable "vstu", in this case, what we can do is
+    to create a teacher scope variable "vstu", copy the student scope value "vstu" to it, and then change the vtea in
+    order to make everything work. This is the reason why there are some same variables with a tea/stu suffix.
     """
 
     def get_download_link(self):
         return self.runtime.handler_url(self, "download_proxy")
 
     def get_baidu_download_link(self):
-        return "https://" + self.bucket_name + ".bj.bcebos.com/" + self.systemGeneratedRandomNameExtension
+        return "https://" + self.bucket_name + ".bj.bcebos.com/" + self.system_generated_random_name_extension
 
     def get_baidu_view_proxy_link(self):
         return self.runtime.handler_url(self, "baidu_view_proxy")
-
 
     bucket_name = String(
          default=BUCKET_NAME, scope=Scope.settings,
@@ -415,7 +410,7 @@ class DocReaderXBlock(XBlock):
         help="name of the pdf file"
     )
 
-    systemGeneratedRandomNameExtension = String(
+    system_generated_random_name_extension = String(
         default="15035435851715194", scope=Scope.settings,
         help="name of the pdf file"
     )
@@ -507,7 +502,10 @@ class DocReaderXBlock(XBlock):
 
         context = {
             "allow_download": self.allow_download,
+            "bos_bucket_name": self.bucket_name,
+            "user_defined_name": self.user_defined_name,
         }
+
         html = self.render_template("static/html/docreaderxblockTea.html", context=context)
         frag = Fragment(html.format(self=self))
         frag.add_css(self.resource_string("static/css/docreaderxblock.css"))
@@ -813,7 +811,7 @@ class DocReaderXBlock(XBlock):
 
     @XBlock.handler
     def download_proxy(self, data, suffix=''):
-        file_url = self.systemGeneratedRandomNameExtension
+        file_url = self.system_generated_random_name_extension
         dict_obj = {
             "file_name": file_url,
         }

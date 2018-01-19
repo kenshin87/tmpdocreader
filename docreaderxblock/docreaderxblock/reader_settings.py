@@ -37,7 +37,7 @@ MAX_UPLOAD_FILE_SIZE = 1024 * 1024 * 100
 
 try:
     MEDIA_ROOT = settings.MEDIA_ROOT
-    logger.info("docreaderxblock has the default of: " + MEDIA_ROOT)
+    logger.info("docreaderxblock: the default root is: " + MEDIA_ROOT)
 except:
     logger.error("settings doesn't have the attribute of settings.MEDIA_ROOT")
     MEDIA_ROOT = ""
@@ -60,13 +60,7 @@ else:
 doc_storage = "docFiles"
 doc_fs = FileSystemStorage(os.path.join(MEDIA_ROOT, doc_storage))
 
-BUCKET_NAME = "testing-yingli"
-
-
-
-
-
-
+BUCKET_NAME = "docreaderxblock"
 
 def get_address():
     address_dict = {}
@@ -74,15 +68,14 @@ def get_address():
     address_dict["CMS_ROOT_URL"] = getattr(settings, "CMS_ROOT_URL", None)
     return address_dict
 
-
 def reverse_wrapper(dict_para):
 
     handler = dict_para["handler"]
     usage_key_string = dict_para["usage_key_string"]
 
     correct_dict = {
-        "handler":handler,
-        "usage_key_string":usage_key_string,
+        "handler": handler,
+        "usage_key_string": usage_key_string,
     }
 
     try:

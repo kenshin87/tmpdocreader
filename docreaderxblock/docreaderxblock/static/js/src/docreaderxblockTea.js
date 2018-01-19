@@ -1,6 +1,14 @@
     /* Javascript for EncryptedXBlock. */
 function DocReaderXBlock(runtime, element) {
 
+/*
+    At the very beginning we tried to use our own server as a interchange for file uploading, 
+this results in the discrete functions at the very beginning. While it is required to transfer the interchanging mode into 
+directly uploading style, then we developed some constructors that wrapped the relative function as classes. This includes:
+
+    1. The client_Temp constructor which handles the uploading process.
+    2. The UploadProcessor which tackles the css style of the progress bar.
+*/
 
    var  global = {};
         global.client = null;
@@ -15,38 +23,94 @@ function DocReaderXBlock(runtime, element) {
     var sts_obj = new TestGetCreDential();
         sts_obj.ajax_get_baidu_sts_xblock();
 
-
-
-    function parse_cookie_and_get_value(key_name_para)
+function GeneralUtil()
+{
+    this.copy_dict = function(dict_para)
     {
-        var cookie_value = null;
-        if (document.cookie && document.cookie != '')
+        var return_dict = {};
+        var list = Object.keys(dict_para);
+        var length = list.length;
+        for (var i = 0; i < length; i++)
         {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++)
-            {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, key_name_para.length + 1) == (key_name_para + '=')) 
-                {
-                    cookie_value = decodeURIComponent(cookie.substring(key_name_para.length + 1));
-                    break;
-                }
-            }
+            return_dict[list[i]] = dict_para[list[i]];
         }
-        return cookie_value;
+        return return_dict;
     }
 
+    this.python_compa_file_name = function()
+    {
+        var random_int = parseInt(Math.random() * 100000) + 100000
+        return  +new Date() + "" + random_int;
+    }
 
-function baidu_upload_wrapper(element_dict_para)
+    this.transfer_element_to_val = function(dict_para)
+    {
+        var return_dict = {};
+        var list = Object.keys(dict_para);
+        var length = list.length;
+        for (var i = 0; i < length; i++)
+        {
+            return_dict[list[i]] = dict_para[list[i]].val();
+        }
+        return return_dict;
+    }
+    return this;
+}
+
+function parse_cookie_and_get_value(key_name_para)
+{
+    var cookie_value = null;
+    if (document.cookie && document.cookie != '')
+    {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++)
+        {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, key_name_para.length + 1) == (key_name_para + '=')) 
+            {
+                cookie_value = decodeURIComponent(cookie.substring(key_name_para.length + 1));
+                break;
+            }
+        }
+    }
+    return cookie_value;
+}
+
+function baidu_upload_wrapper(event_object)
+{
+    if (checkFileExists(event_object))
+    {
+        if (!checkValidSize(event_object))
+        {
+            return;
+        }     
+        
+        if (!checkValidFormat(event_object))
+        {
+            return;
+        }       
+        event_object.preventDefault();
+        postFileToCMS();
+    }
+    else
+    {
+        // TODO: should not return, here need to be further implemented.
+        // This is the case when the teacher want to change the name of the file.
+        event_object.preventDefault();
+        checkWhetherValidChangeName(event_object); 
+    }
+}
+
+function post_file_to_baidu(element_dict_para)
 {
 
     var csrfvalue = parse_cookie_and_get_value('csrftoken');
 
     var element_val_dict = gen_util.transfer_element_to_val(element_dict_para);
 
-    $(".noUploadWarning", element).text("文件正在上传中，请耐心等待。");  
-    $(".noUploadWarning", element).css("color", "#f11");
+    $(".no_upload_warning", element).text("文件正在上传中，请耐心等待。");  
+    $(".no_upload_warning", element).css("color", "#f11");
 
     var postUrl = runtime.handlerUrl(element, "baidu_upload_proxy");
 
@@ -82,13 +146,11 @@ function baidu_upload_wrapper(element_dict_para)
             error: function(response)
             {
                 console.log("--postFileToCMS Fails");
-                $(".noUploadWarning", element).css("color", "#f11");
+                $(".no_upload_warning", element).css("color", "#f11");
             }
         }
     )
 }
-
-
 
 function client_Temp(sts_obj)
 {
@@ -110,9 +172,60 @@ function client_Temp(sts_obj)
          endpoint: config.bos_endpoint, // 
      };
 
+    obj.check_file_exists = function(event_object)
+    {
+         if ( $("#file", element)[0].files.length != 0 )
+         {
+            return true;
+         }
+         else
+         {
+            return false;
+         }
+    }
+
+    obj.checkValidFormat = function(event_object)
+    {
+        if ( $(".file-upload", element)[0].files.length != 0 )
+        {   
+            var soloFile = $(".file-upload", element)[0].files[0];
+            var nameList  = soloFile.name.split(".");
+            var available = {"pdf":"pdf", "xls":"xls", "xlsx":"xlsx", "doc":"doc", "docx":"docx", "ppt":"ppt", "pptx":"pptx"}; 
+       
+            if (
+                    nameList.length < 2
+                        ||  
+                    (!(nameList[nameList.length - 1].toLowerCase() in available))
+               )
+            {
+                event_object.preventDefault();
+                $(".no_upload_warning", element).css("color", "#f11")
+                $(".no_upload_warning", element).text("只支持ppt, excel, word, pdf文件的上传！");
+                return false;
+            }
+        }     
+        return true;
+    }
+
+    obj.check_valid_size = function(event_object)
+    {
+        if ( $(".file-upload", element)[0].files.length != 0 )
+        {
+            var soloFile = $(".file-upload", element)[0].files[0];
+            var size = soloFile.size;
+            if (size > 1024 * 1024 * 95)
+            {
+                event_object.preventDefault();
+                $(".no_upload_warning", element).css("color", "#f11");
+                $(".no_upload_warning", element).text("无法上传大小超过100M的文件!");  
+                return false;              
+            }            
+        }
+        return true;
+    }
+
     obj.upload = function()
     {
-        console.log("Now we are uploading something");
         var bucket = config.bos_bucket_name; // 设置您想要操作的bucket
         var client = new baidubce.sdk.BosClient(bosConfig);
 
@@ -128,7 +241,6 @@ function client_Temp(sts_obj)
         );
 
         var file = $("#file")[0].files[0]; // 获取要上传的文件
-
         var file_name_list = file.name.split(".");
         var extention = file_name_list[file_name_list.length - 1];
         var key = gen_util.python_compa_file_name() + "." + extention;
@@ -150,9 +262,9 @@ function client_Temp(sts_obj)
         .then(
             function (res) 
             {
-                console.log("successfully uploaded");
-                baidu_upload_wrapper(global.html_element);
-            }).catch(
+                post_file_to_baidu(global.html_element);
+            })
+        .catch(
             function (err) 
             {
                 console.log(err);
@@ -161,18 +273,23 @@ function client_Temp(sts_obj)
     return obj;
 };
 
-
 $('#baidu_submit').click(
 function (event) 
 {
     event.preventDefault();
     if (global.client == null)
     {
-        console.log("global.client is null");
+        //console.log("global.client is null");
         global.client = new client_Temp(sts_obj);
     }
     global.client.upload();
     return false;
+});
+
+$('#file').change(
+function () 
+{
+    $("#progress_bar_div").show();
 });
 
 function UploadProcessor()
@@ -256,39 +373,6 @@ function UploadProcessor()
     return obj;
 }
 
-function GeneralUtil()
-{
-    this.copy_dict = function(dict_para)
-    {
-        var return_dict = {};
-        var list = Object.keys(dict_para);
-        var length = list.length;
-        for (var i = 0; i < length; i++)
-        {
-            return_dict[list[i]] = dict_para[list[i]];
-        }
-        return return_dict;
-    }
-
-    this.python_compa_file_name = function()
-    {
-        var random_int = parseInt(Math.random() * 100000) + 100000
-        return  +new Date() + "" + random_int;
-    }
-
-    this.transfer_element_to_val = function(dict_para)
-    {
-        var return_dict = {};
-        var list = Object.keys(dict_para);
-        var length = list.length;
-        for (var i = 0; i < length; i++)
-        {
-            return_dict[list[i]] = dict_para[list[i]].val();
-        }
-        return return_dict;
-    }
-    return this;
-}
 
 function TestGetCreDential()
 {
@@ -298,8 +382,6 @@ function TestGetCreDential()
         {
             obj.config = {
                 "bos_bucket_name": obj.bos_bucket_name.val(),
-                "bos_ak": obj.bos_ak.val(),
-                "bos_sk": obj.bos_sk.val(),
                 "bos_sts_ak": obj.bos_sts_ak.val(),
                 "bos_sts_sk": obj.bos_sts_sk.val(),
                 "bos_sts_token": obj.bos_sts_token.val(),
@@ -309,9 +391,6 @@ function TestGetCreDential()
         }
 
         obj.bos_bucket_name = $(".bos_bucket_name");
-        obj.bos_ak = $(".bos_ak");
-        obj.bos_sk = $(".bos_sk");
-
         obj.bos_sts_ak = $(".bos_sts_ak");
         obj.bos_sts_sk = $(".bos_sts_sk");
         obj.bos_sts_token = $(".bos_sts_token");
@@ -368,7 +447,7 @@ function TestGetCreDential()
                 data: jsonData,
                 success: function(response)
                 {
-                    console.log("--testget_baidu_sts success");
+                    //console.log("--testget_baidu_sts success");
                     obj.set_name(response);
                     obj.refresh_current_config();
                 },  
@@ -522,8 +601,8 @@ function checkValidSize(event_object)
         if (size > 1024 * 1024 * 95)
         {
             event_object.preventDefault();
-            $(".noUploadWarning", element).css("color", "#f11");
-            $(".noUploadWarning", element).text("无法上传大小超过90M的文件!");  
+            $(".no_upload_warning", element).css("color", "#f11");
+            $(".no_upload_warning", element).text("无法上传大小超过90M的文件!");  
             return false;              
         }            
     }
@@ -540,8 +619,8 @@ function testcheckValidSize(event_object)
         if (size > 1024 * 1024 * 95)
         {
             event_object.preventDefault();
-            $(".noUploadWarning", element).css("color", "#f11")
-            $(".noUploadWarning", element).text("无法上传大小超过90M的文件!");  
+            $(".no_upload_warning", element).css("color", "#f11")
+            $(".no_upload_warning", element).text("无法上传大小超过90M的文件!");  
             console.log("--testcheckValidSize is False");
             return false;              
         }            
@@ -565,8 +644,8 @@ function checkValidFormat(event_object)
            )
         {
             event_object.preventDefault();
-            $(".noUploadWarning", element).css("color", "#f11")
-            $(".noUploadWarning", element).text("只支持ppt, excel, word, pdf文件的上传！");
+            $(".no_upload_warning", element).css("color", "#f11")
+            $(".no_upload_warning", element).text("只支持ppt, excel, word, pdf文件的上传！");
             return false;
         }
     }     
@@ -589,8 +668,8 @@ function testcheckValidFormat(event_object)
            )
         {
             event_object.preventDefault();
-            $(".noUploadWarning", element).css("color", "#f11")
-            $(".noUploadWarning", element).text("只支持ppt, excel, word, pdf文件的上传！");
+            $(".no_upload_warning", element).css("color", "#f11")
+            $(".no_upload_warning", element).text("只支持ppt, excel, word, pdf文件的上传！");
             return false;
         }
     }
@@ -603,8 +682,8 @@ function checkWhetherValidChangeName(event_object)
     // if ( $(".baidu_doc_id", element).val() == "doc-hmqp85mbqpgfxq5" )
     // {
     //         event_object.preventDefault();
-    //         $(".noUploadWarning", element).css("color", "#f11")
-    //         $(".noUploadWarning", element).text("请先上传一个合法文件！");
+    //         $(".no_upload_warning", element).css("color", "#f11")
+    //         $(".no_upload_warning", element).text("请先上传一个合法文件！");
     // }
     // // It means that the user has uploaded some files.
     // else
@@ -621,8 +700,8 @@ function testcheckWhetherValidChangeName(event_object)
     // if ( $(".baidu_doc_id", element).val() == "doc-hmqp85mbqpgfxq5" )
     // {
     //         event_object.preventDefault();
-    //         $(".noUploadWarning", element).css("color", "#f11")
-    //         $(".noUploadWarning", element).text("请先上传一个合法文件！");
+    //         $(".no_upload_warning", element).css("color", "#f11")
+    //         $(".no_upload_warning", element).text("请先上传一个合法文件！");
     // }
 
     // // It means that the user has uploaded some files.
@@ -669,7 +748,6 @@ function testcheckWhetherValidChangeName(event_object)
         }
 
     }
-
 
     function ajax_upload_wrapper(event_object)
     {
@@ -733,12 +811,10 @@ function testcheckWhetherValidChangeName(event_object)
     }
 
 
-
-
     function postFileToCMS()
     {
-        $(".noUploadWarning", element).text("文件正在上传中，请耐心等待。");  
-        $(".noUploadWarning", element).css("color", "#f11");
+        $(".no_upload_warning", element).text("文件正在上传中，请耐心等待。");  
+        $(".no_upload_warning", element).css("color", "#f11");
         runtime.notify('save', {state: 'start'});
 
         var postUrl = runtime.handlerUrl(element, "upload_proxy");
@@ -767,13 +843,12 @@ function testcheckWhetherValidChangeName(event_object)
                 success: function(response)
                 {
                     runtime.notify('save', {state: 'end'});
-                    //window.location.reload();
                 },  
 
                 error: function(response)
                 {
                     console.log("--postFileToCMS Fails");
-                    $(".noUploadWarning", element).css("color", "#f11");
+                    $(".no_upload_warning", element).css("color", "#f11");
                 }
             }
         )
@@ -781,8 +856,8 @@ function testcheckWhetherValidChangeName(event_object)
 
     function testpostFileToCMS()
     {
-        $(".noUploadWarning", element).text("文件正在上传中，请耐心等待。");  
-        $(".noUploadWarning", element).css("color", "#f11");
+        $(".no_upload_warning", element).text("文件正在上传中，请耐心等待。");  
+        $(".no_upload_warning", element).css("color", "#f11");
         
         runtime.notify('save', {state: 'start'});
 
@@ -814,28 +889,23 @@ function testcheckWhetherValidChangeName(event_object)
                     runtime.notify('save', {state: 'end'});
                     console.log("--testpostFileToCMS success");
                     window.testpostFileToCMS_data = response;
-                    //window.location.reload();
                 },  
 
                 error: function(response)
                 {
                     console.log("--testpostFileToCMS Fails");
-                    $(".noUploadWarning", element).css("color", "#f11");
+                    $(".no_upload_warning", element).css("color", "#f11");
                 }
             }
         )
     }
 
-
     // Argument response here is just a string of " {"result": {"file_url": "asdasdasd.pdf"}} "
     function changeName(event_object) 
     {
-    
         runtime.notify('save', {state: 'start'});
 
-
         var postUrl = runtime.handlerUrl(element, "renewName");
-
         var user_defined_name   = $(".firstXBlockTeaDisplayName", element).val();
         var allow_download = $(".firstxblockAllowDownload", element).val();
 
@@ -857,16 +927,14 @@ function testcheckWhetherValidChangeName(event_object)
                 {
                     runtime.notify('save', {state: 'end'});                    
                 },  
-
                 error: function(response)
                 {
                     console.log("--testchangeName Fails");
-                    $(".noUploadWarning", element).css("color", "#f11");
+                    $(".no_upload_warning", element).css("color", "#f11");
                 }
             }
         )
     }
-
 
     // Argument response here is just a string of " {"result": {"file_url": "asdasdasd.pdf"}} "
     function testchangeName(event_object) 
@@ -905,142 +973,14 @@ function testcheckWhetherValidChangeName(event_object)
                 error: function(response)
                 {
                     console.log("--testchangeName Fails");
-                    $(".noUploadWarning", element).css("color", "#f11");
+                    $(".no_upload_warning", element).css("color", "#f11");
                 }
             }
         )
     }
-
-    function get_baidu_sts()
-    {
-
-        var bucket_name = $(".bucket_name").val();
-
-        var postUrl = runtime.handlerUrl(element, "get_baidu_sts");
-
-        var jsonData = JSON.stringify(
-                {
-                    "bucket_name": bucket_name, 
-                }
-            );
-
-        $.ajax
-        (
-            {
-                type: "POST",
-                url: postUrl,
-                data: jsonData,
-                success: function(response)
-                {
-                    console.log("--testget_baidu_sts success");
-                },  
-
-                error: function(response)
-                {
-                    console.log("--testget_baidu_sts Fails");
-                }
-            }
-        )
-    }
-
-    function testget_baidu_sts()
-    {
-        console.log("enter testget_baidu_sts");
-
-        var postUrl = runtime.handlerUrl(element, "get_baidu_sts");
-        console.log("http://127.0.0.1:9000" + postUrl);
-
-        var jsonData = JSON.stringify(
-                {
-                    "bucket_name": "default-yingli", 
-                }
-            );
-
-        $.ajax
-        (
-            {
-                type: "POST",
-                url: postUrl,
-                data: jsonData,
-                success: function(response)
-                {
-                    console.log("--testget_baidu_sts success");
-                    window.testget_baidu_sts_data = response;
-                    console.log(testget_baidu_sts_data);
-                },  
-
-                error: function(response)
-                {
-                    console.log("--testget_baidu_sts Fails");
-                    $(".noUploadWarning", element).css("color", "#f11");
-                }
-            }
-        )
-    }
-
-
-
-/*
-    function parse_cookie_and_get_value(key_name_para)
-    {
-        var cookie_value = null;
-        if (document.cookie && document.cookie != '')
-        {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++)
-            {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, key_name_para.length + 1) == (key_name_para + '=')) 
-                {
-                    cookie_value = decodeURIComponent(cookie.substring(key_name_para.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookie_value;
-    }
-
-
-        var csrfvalue = parse_cookie_and_get_value('csrftoken');
-
-        var jsonData = JSON.stringify(
-                {
-                    "bucket_name": "default-yingli", 
-                }
-            );
-
-        $.ajax
-        (
-            {
-                type: "POST",
-                url: "http://127.0.0.1:9000/handler/docreaderxblock.docreaderxblock.d0.u0/get_baidu_sts/?student=student_1&",
-                data: jsonData,
-                beforeSend: function(xhr, settings) 
-                {
-                    xhr.setRequestHeader("X-CSRFToken", csrfvalue);
-                }, 
-
-                success: function(response)
-                {
-                    console.log("--testget_baidu_sts success");
-                    window.testget_baidu_sts_data = response;
-                    console.log(testget_baidu_sts_data);
-                },  
-
-                error: function(response)
-                {
-                    console.log("--testget_baidu_sts Fails");
-                }
-            }
-        )
-
-
-*/
 
     // function testfullaccess() 
     // {
-
 
     //     console.log("enter testfullaccess");
     //     var csrfvalue = parse_cookie_and_get_value('csrftoken');
