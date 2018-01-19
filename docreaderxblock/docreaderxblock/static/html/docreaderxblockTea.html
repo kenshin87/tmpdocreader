@@ -19,7 +19,7 @@
 <form>
      <li class="field comp-setting-entry is-set">
         <div class="wrapper-comp-setting">
-           <label class="label setting-label" for="firstxblockTeaDisplayName_name">文件名</label>
+           <label class="label setting-label" for="firstxblockTeaDisplayName_name" style="margin-left:80px;">文件名</label>
 
           <input class="input setting-input firstXBlockTeaDisplayName" value= "{{user_defined_name}}"  type="text">  
 
@@ -41,17 +41,20 @@
 
     <li class= "field comp-setting-entry is-set">
         <div class="wrapper-comp-setting">
-            <label class="label setting-label">请选择文档文件</label>
+            <label class="label setting-label" style="margin-left:80px;">请选择文档文件</label>
             <input class = "file-upload" type = file name = "file-upload" hidden/>
             <input type="file" id="file" >
             <input type="submit" id = "baidu_submit" hidden/>
-            <div>
-            <div id = "progress_bar_div" style = "display:none">
+           
+            <label class="label setting-label" style="margin-left:80px;"></label>
+            <div id = "progress_bar_div" style = "display:none;" class="">
                 <p id = "progress_bar_p_up"   class = "progress_bar_p_up"><span id = "progress_value_span" class = "progress_value_span">0.00</span></p>
                 <p id = "progress_bar_p_down"   class = "progress_bar_p_down"></p>
+
+                <p >只支持ppt, excel, word, pdf文件的上传</p> 
             </div>
-            </div>
-            <p><span class="tip setting-help no_upload_warning">只支持ppt, excel, word, pdf文件的上传。</span></p>            
+           
+                       
 
 
         </div>
@@ -59,7 +62,7 @@
 
     <li class="field comp-setting-entry is-set">
         <div class="wrapper-comp-setting">
-            <label class="label setting-label" for="pdf_edit_allow_download">是否允许文档下载</label>
+            <label class="label setting-label" for="pdf_edit_allow_download" style="margin-left:80px;">是否允许文档下载</label>
             <select class="input setting-input firstxblockAllowDownload">
 
                 {% if allow_download %}
@@ -74,7 +77,7 @@
 
 
         </div>
-        <span class="tip setting-help">显示一个“下载”按钮，让学生下载该文档</span>
+        <span class="tip setting-help">允许后，学员将拥有下载文档的权限</span>
     </li>
 
     <div class="xblock-actions">
