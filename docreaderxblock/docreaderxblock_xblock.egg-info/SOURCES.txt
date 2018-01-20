@@ -1,4 +1,5 @@
 docreaderxblock/__init__.py
+docreaderxblock/baidu_sts.py
 docreaderxblock/docreaderxblock.py
 docreaderxblock/file_helper.py
 docreaderxblock/log_helper.py
@@ -14,6 +15,8 @@ docreaderxblock/static/html/docreaderxblockBaiduUnknown.html
 docreaderxblock/static/html/docreaderxblockStu.html
 docreaderxblock/static/html/docreaderxblockTea.html
 docreaderxblock/static/js/src/addSrc.js
+docreaderxblock/static/js/src/baidu_bce-bos-uploader.bundle.js
+docreaderxblock/static/js/src/baidu_jquery.min.js
 docreaderxblock/static/js/src/doc_reader_v2.js
 docreaderxblock/static/js/src/docreaderxblock.js
 docreaderxblock/static/js/src/docreaderxblockBaidu.js

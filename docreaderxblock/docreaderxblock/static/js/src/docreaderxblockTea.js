@@ -22,6 +22,8 @@ directly uploading style, then we developed some constructors that wrapped the r
     var gen_util = new GeneralUtil();
     var sts_obj = new TestGetCreDential();
         sts_obj.ajax_get_baidu_sts_xblock();
+    var cssValidator = CSSValidator();
+
 
 function GeneralUtil()
 {
@@ -77,30 +79,7 @@ function parse_cookie_and_get_value(key_name_para)
     return cookie_value;
 }
 
-function baidu_upload_wrapper(event_object)
-{
-    if (checkFileExists(event_object))
-    {
-        if (!checkValidSize(event_object))
-        {
-            return;
-        }     
-        
-        if (!checkValidFormat(event_object))
-        {
-            return;
-        }       
-        event_object.preventDefault();
-        postFileToCMS();
-    }
-    else
-    {
-        // TODO: should not return, here need to be further implemented.
-        // This is the case when the teacher want to change the name of the file.
-        event_object.preventDefault();
-        checkWhetherValidChangeName(event_object); 
-    }
-}
+
 
 function post_file_to_baidu(element_dict_para)
 {
@@ -152,25 +131,10 @@ function post_file_to_baidu(element_dict_para)
     )
 }
 
-function client_Temp(sts_obj)
+
+function  CSSValidator(sts_obj)
 {
-
     var obj = {};
-        obj.python_random_name = $(".python_random_name");
-
-        obj.sts_obj = sts_obj;
-    var upload_obj = new UploadProcessor();
-    var config =  sts_obj.config;
-
-    var bosConfig = {
-        credentials: {
-             ak: config.bos_sts_ak,
-             sk: config.bos_sts_sk,
-             
-         },
-         sessionToken: config.bos_sts_token,
-         endpoint: config.bos_endpoint, // 
-     };
 
     obj.check_file_exists = function(event_object)
     {
@@ -184,11 +148,11 @@ function client_Temp(sts_obj)
          }
     }
 
-    obj.checkValidFormat = function(event_object)
+    obj.check_valid_format = function(event_object)
     {
-        if ( $(".file-upload", element)[0].files.length != 0 )
+        if ( $("#file", element)[0].files.length != 0 )
         {   
-            var soloFile = $(".file-upload", element)[0].files[0];
+            var soloFile = $("#file", element)[0].files[0];
             var nameList  = soloFile.name.split(".");
             var available = {"pdf":"pdf", "xls":"xls", "xlsx":"xlsx", "doc":"doc", "docx":"docx", "ppt":"ppt", "pptx":"pptx"}; 
        
@@ -209,9 +173,9 @@ function client_Temp(sts_obj)
 
     obj.check_valid_size = function(event_object)
     {
-        if ( $(".file-upload", element)[0].files.length != 0 )
+        if ( $("#file")[0].files.length != 0 )
         {
-            var soloFile = $(".file-upload", element)[0].files[0];
+            var soloFile = $("#file", element)[0].files[0];
             var size = soloFile.size;
             if (size > 1024 * 1024 * 95)
             {
@@ -223,6 +187,31 @@ function client_Temp(sts_obj)
         }
         return true;
     }
+    return obj;
+}
+
+
+
+function client_Temp(sts_obj)
+{
+
+    var obj = {};
+        obj.python_random_name = $(".python_random_name");
+
+        obj.sts_obj = sts_obj;
+    var upload_obj = new UploadProcessor();
+    var config =  sts_obj.config;
+
+    var bosConfig = {
+        credentials: {
+             ak: config.bos_sts_ak,
+             sk: config.bos_sts_sk,
+             
+         },
+         sessionToken: config.bos_sts_token,
+         endpoint: config.bos_endpoint, // 
+     };
+
 
     obj.upload = function()
     {
@@ -273,24 +262,7 @@ function client_Temp(sts_obj)
     return obj;
 };
 
-$('#baidu_submit').click(
-function (event) 
-{
-    event.preventDefault();
-    if (global.client == null)
-    {
-        //console.log("global.client is null");
-        global.client = new client_Temp(sts_obj);
-    }
-    global.client.upload();
-    return false;
-});
 
-$('#file').change(
-function () 
-{
-    $("#progress_bar_div").show();
-});
 
 function UploadProcessor()
 {
@@ -566,7 +538,7 @@ function testcheck_valid_name(event_object)
 
 function checkFileExists(event_object)
 {
-     if ( $(".file-upload", element)[0].files.length != 0 )
+     if ( $(".file-upload")[0].files.length != 0 )
      {
         return true;
      }
@@ -731,7 +703,8 @@ function testcheckWhetherValidChangeName(event_object)
         'click', 
         //testajax_upload_wrapper
         //ajax_upload_wrapper
-        wrapper_chooser
+        //wrapper_chooser
+        testwrapper_chooser
     );
 
     function wrapper_chooser(event_object)
@@ -746,8 +719,74 @@ function testcheckWhetherValidChangeName(event_object)
         {
             return ajax_upload_wrapper(event_object);
         }
-
     }
+
+    function testwrapper_chooser(event_object)
+    {
+        console.log("enter wrapper_chooser");
+        event_object.preventDefault();
+
+        if ( $("#file")[0].files.length != 0 )
+        {
+            testbaidu_upload_wrapper(event_object);
+        }    
+        else
+        {
+            return ajax_upload_wrapper(event_object);
+        }
+    }
+
+
+$('#baidu_submit').click(
+function (event) 
+{
+    event.preventDefault();
+    if (global.client == null)
+    {
+        //console.log("global.client is null");
+        global.client = new client_Temp(sts_obj);
+    }
+    global.client.upload();
+    return false;
+});
+
+$('#file').change(
+function () 
+{
+    $("#progress_bar_div").css({"display":"inline-block"});
+});
+
+    function baidu_upload_wrapper(event_object)
+    {
+            if (!cssValidator.check_valid_size(event_object))
+            {
+                return;
+            }     
+            
+            if (!cssValidator.check_valid_format(event_object))
+            {
+                return;
+            }     
+            $('#baidu_submit').click();
+    }
+
+    function testbaidu_upload_wrapper(event_object)
+    {
+            if (!cssValidator.check_valid_size(event_object))
+            {
+                return;
+            }     
+            
+            if (!cssValidator.check_valid_format(event_object))
+            {
+                return;
+            }     
+            console.log("passed test"); 
+            $('#baidu_submit').click(); 
+
+            //event_object.preventDefault();
+    }
+
 
     function ajax_upload_wrapper(event_object)
     {
@@ -1166,7 +1205,5 @@ function testcheckWhetherValidChangeName(event_object)
     //         testCountuser_state_summary();
     //     }
     // );
-
-
 }
 

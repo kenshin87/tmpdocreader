@@ -64,8 +64,8 @@ BUCKET_NAME = "docreaderxblock"
 
 def get_address():
     address_dict = {}
-    address_dict["LMS_ROOT_URL"] = getattr(settings, "LMS_ROOT_URL", None)
-    address_dict["CMS_ROOT_URL"] = getattr(settings, "CMS_ROOT_URL", None)
+    address_dict["LMS_ROOT_URL"] = getattr(settings, "LMS_ROOT_URL", "http://127.0.0.1:8001")
+    address_dict["CMS_ROOT_URL"] = getattr(settings, "CMS_ROOT_URL", "http://127.0.0.1:8001")
     return address_dict
 
 def reverse_wrapper(dict_para):

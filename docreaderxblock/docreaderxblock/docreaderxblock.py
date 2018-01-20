@@ -301,7 +301,7 @@ class DocReaderXBlock(XBlock):
         return "https://" + self.bucket_name + ".bj.bcebos.com/" + self.system_generated_random_name_extension
 
     def get_baidu_view_proxy_link(self):
-        return self.runtime.handler_url(self, "baidu_view_proxy")
+        return self.CMS_ROOT_URL + self.runtime.handler_url(self, "baidu_view_proxy")
 
     bucket_name = String(
          default=BUCKET_NAME, scope=Scope.settings,
