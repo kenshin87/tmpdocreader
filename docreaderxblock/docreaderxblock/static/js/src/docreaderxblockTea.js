@@ -267,14 +267,18 @@ function client_Temp(sts_obj)
 function UploadProcessor()
 {
     var obj = {};
-    obj.width = 302;
+
+    obj.width = 0.68;
+
     obj.input_button  = document.getElementById("file");
     obj.submit_button = document.getElementById("baidu_submit");
 
     obj.set_bar_P_up_width = function(event)
     {
-
-        document.getElementById("progress_bar_p_up").style.width = obj.get_percentage(event).toFixed(2) * obj.width / 100 + "px";
+        
+        document.getElementById("progress_bar_p_up").style.width = obj.get_percentage(event).toFixed(2) * obj.width + "%";
+        console.log(obj.get_percentage(event).toFixed(2) * obj.width  + "%");
+        //document.getElementById("progress_bar_p_up").style.width = obj.get_percentage(event).toFixed(2) * obj.width / 100 + "px";
     }
 
     obj.set_span_value = function(event)
