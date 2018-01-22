@@ -283,7 +283,7 @@ function UploadProcessor()
 
     obj.set_span_value = function(event)
     {
-        document.getElementById("progress_value_span").innerHTML = obj.get_percentage(event).toFixed(2);
+        document.getElementById("progress_value_span").innerHTML = obj.get_percentage(event).toFixed(2) + "%";
     }
 
     obj.disable_button_style = function()
