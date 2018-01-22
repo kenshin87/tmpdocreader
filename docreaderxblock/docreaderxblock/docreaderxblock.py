@@ -564,11 +564,11 @@ class DocReaderXBlock(XBlock):
         self.user_defined_name = data["user_defined_name"]
         self.allow_download = data["allow_download"]
 
-        baidu_view_proxy_url_tea = self.get_baidu_view_proxy_link()
-        dict_obj = {
-            "baidu_view_proxy_url_tea": baidu_view_proxy_url_tea,
-        }
-        DocReaderXBlockChanger.store_baidu_view_proxy_info(self, dict_obj)
+        # baidu_view_proxy_url_tea = self.get_baidu_view_proxy_link()
+        # dict_obj = {
+        #     "baidu_view_proxy_url_tea": baidu_view_proxy_url_tea,
+        # }
+        # DocReaderXBlockChanger.store_baidu_view_proxy_info(self, dict_obj)
 
         # Here need to check how many file are there inside the server
         return {

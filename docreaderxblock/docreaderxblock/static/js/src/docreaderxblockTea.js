@@ -267,7 +267,7 @@ function client_Temp(sts_obj)
 function UploadProcessor()
 {
     var obj = {};
-    obj.width = 240;
+    obj.width = 302;
     obj.input_button  = document.getElementById("file");
     obj.submit_button = document.getElementById("baidu_submit");
 
@@ -746,15 +746,16 @@ function (event)
         //console.log("global.client is null");
         global.client = new client_Temp(sts_obj);
     }
+    $("#progress_bar_div").css({"display":"inline-block"});
     global.client.upload();
     return false;
 });
 
-$('#file').change(
-function () 
-{
-    $("#progress_bar_div").css({"display":"inline-block"});
-});
+// $('#file').change(
+// function () 
+// {
+//     $("#progress_bar_div").css({"display":"inline-block"});
+// });
 
     function baidu_upload_wrapper(event_object)
     {

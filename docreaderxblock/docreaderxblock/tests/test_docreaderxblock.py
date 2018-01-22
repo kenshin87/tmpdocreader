@@ -1,7 +1,6 @@
 import os
 import unittest
 from .test_base import TestBase
-from .request_helper import request_send_file_local
 
 
 from django.test.client import RequestFactory
