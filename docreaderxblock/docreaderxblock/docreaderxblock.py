@@ -30,6 +30,7 @@ from .reader_settings import ALLOWED_UPLOAD_FILE_TYPE
 from .reader_settings import MAX_UPLOAD_FILE_SIZE
 from .reader_settings import get_address
 from .reader_settings import doc_fs
+from .reader_settings import lms_reverse_wrapper
 
 from .doc.doc_api_wrapper import DocWrapper
 from .doc.bos_api_wrapper import upload_file_to_bos
@@ -301,7 +302,7 @@ class DocReaderXBlock(XBlock):
         return "https://" + self.bucket_name + ".bj.bcebos.com/" + self.system_generated_random_name_extension
 
     def get_baidu_view_proxy_link(self):
-        return self.CMS_ROOT_URL + self.runtime.handler_url(self, "baidu_view_proxy")
+        return self.runtime.handler_url(self, "baidu_view_proxy")
 
     bucket_name = String(
          default=BUCKET_NAME, scope=Scope.settings,
@@ -359,6 +360,12 @@ class DocReaderXBlock(XBlock):
     #     default="", scope=Scope.user_state,
     #     help="name of the LMS address"
     # )
+
+    baidu_view_proxy_url_stu = String(
+        default="", scope=Scope.settings,
+        help="name of the LMS address"
+    )
+
 
     baidu_view_proxy_url_tea = String(
         default="", scope=Scope.settings,
@@ -480,9 +487,12 @@ class DocReaderXBlock(XBlock):
         else:
             has_doc = True
 
+        baidu_view_proxy_url_common = self.get_baidu_view_proxy_link()
+
         context = {
             "allow_download": self.allow_download,
             "has_doc": has_doc,
+            "baidu_view_proxy_url_common": baidu_view_proxy_url_common,
         }
 
         html = self.render_template('static/html/docreaderxblockStu.html', context=context)
@@ -866,6 +876,13 @@ class DocReaderXBlock(XBlock):
         assert data['hello'] == 'world'
         self.baidu_view_proxy_url_stu = data["baidu_view_proxy_url"]
         return {"baidu_view_proxy_url": self.baidu_view_proxy_url_stu}
+
+
+
+    @XBlock.handler
+    def iframe_src_handler(self, data, suffix=''):
+        self.baidu_view_proxy_url_stu = self.get_baidu_view_proxy_link()
+        return {"baidu_view_proxy_url": self.baidu_view_proxy_url}
 
     # TO-DO: change this to create the scenarios you'd like to see in the
     # workbench while developing your XBlock.

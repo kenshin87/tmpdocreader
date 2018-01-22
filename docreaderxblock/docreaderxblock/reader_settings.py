@@ -68,19 +68,21 @@ def get_address():
     address_dict["CMS_ROOT_URL"] = getattr(settings, "CMS_ROOT_URL", "http://127.0.0.1:8001")
     return address_dict
 
-def reverse_wrapper(dict_para):
+def lms_reverse_wrapper(dict_para):
 
     handler = dict_para["handler"]
-    usage_key_string = dict_para["usage_key_string"]
+    usage_id = dict_para["usage_id"]
+    course_id = dict_para["course_id"]
 
     correct_dict = {
         "handler": handler,
-        "usage_key_string": usage_key_string,
+        "course_id": course_id,
+        "usage_id": usage_id,
+
     }
 
     try:
-        settings.LMS_ROOT_URL
-        return reverse("component_handler", correct_dict)
+        return reverse("xblock_handler", correct_dict)
     except:
-        return reverse("handler", correct_dict)
+        raise (ValueError, "cannot find the specific handler.")
 
