@@ -23,7 +23,7 @@ bos_host = "bj.bcebos.com"
 
 config = BceClientConfiguration(
    credentials=credentials,
-   endpoint = bos_host
+   endpoint=bos_host
 )
 
 

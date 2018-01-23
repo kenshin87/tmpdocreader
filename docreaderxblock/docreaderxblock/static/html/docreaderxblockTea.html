@@ -1,3 +1,4 @@
+{% load i18n %}
 <!-- 
     <p>baidu_doc_id {self.baidu_doc_id}</p>
     <p class = "bucket_name">{self.bucket_name}</p> 
@@ -19,7 +20,7 @@
 <form>
      <li class="field comp-setting-entry is-set">
         <div class="wrapper-comp-setting">
-           <label class="label setting-label" for="firstxblockTeaDisplayName_name" style="margin-left:80px;">文件名</label>
+           <label class="label setting-label" for="firstxblockTeaDisplayName_name" style="margin-left:80px;">{% trans "文件名" %}</label>
 
           <input class="input setting-input firstXBlockTeaDisplayName" value= "{{user_defined_name}}"  type="text" style="width:47%;">  
 
@@ -41,18 +42,18 @@
 
     <li class= "field comp-setting-entry is-set">
         <div class="wrapper-comp-setting">
-            <label class="label setting-label" style="margin-left:80px;">请选择文档文件</label> 
+            <label class="label setting-label" style="margin-left:80px;">{% trans "请选择文档文件" %}</label> 
             <input class = "file-upload" type = file name = "file-upload" hidden/>
             <input type="file" id="file" >
             <input type="submit" id = "baidu_submit" hidden/>
 
         </div>
         <div style="width:100%;">
-            <label class="label setting-label no_upload_warning" style="margin-left:80px;font-weight:normal;">只支持ppt, excel, word, pdf文件的上传</label>
+            <label class="label setting-label no_upload_warning" style="margin-left:80px;font-weight:normal;">{% trans "只支持ppt, excel, word, pdf文件的上传" %}</label>
             <div id = "progress_bar_div" style = "display:none;position:relative;width:48%">
                 <p id = "progress_bar_p_up"   class = "progress_bar_p_up" style="position:absolute;"><span id = "progress_value_span" class = "progress_value_span" style="height:22px;line-height:22px;">0.00</span></p>
                 <p id = "progress_bar_p_down" class = "progress_bar_p_down" style="float:left"></p>
-                <span style="float:left">正在上传</span>
+                <span style="float:left">{% trans "正在上传" %}</span>
             </div>
         </div>
     </li>
@@ -61,17 +62,17 @@
 
     <li class="field comp-setting-entry is-set">
         <div class="wrapper-comp-setting">
-            <label class="label setting-label" for="pdf_edit_allow_download" style="margin-left:80px;" >是否允许文档下载<br>
-            <span style="font-weight:normal;">允许后，学员将拥有下载文档的权限</span>
+            <label class="label setting-label" for="pdf_edit_allow_download" style="margin-left:80px;" >{% trans "是否允许文档下载" %}<br>
+            <span style="font-weight:normal;">{% trans "允许后，学员将拥有下载文档的权限" %}</span>
             </label>
             <select class="input setting-input firstxblockAllowDownload" style="width:47%;">
 
                 {% if allow_download %}
-                    <option value="True"   >可下载</option>
-                    <option value="False"  >不可下载</option>
+                    <option value="True"   >{% trans "可下载" %}</option>
+                    <option value="False"  >{% trans "不可下载" %}</option>
                 {% else %}
-                    <option value="False"  >不可下载</option>
-                    <option value="True"   >可下载</option>
+                    <option value="False"  >{% trans "不可下载" %}</option>
+                    <option value="True"   >{% trans "可下载" %}</option>
                 {% endif %}
 
             </select>
@@ -83,10 +84,10 @@
     <div class="xblock-actions">
         <ul>
             <li class="action-item">
-                <a href="#" class="button action-primary save-button">保存</a></a>
+                <a href="#" class="button action-primary save-button">{% trans "保存" %}</a></a>
             </li>
             <li class="action-item">
-                <a href="#" class="button  cancel-button">取消</a>
+                <a href="#" class="button  cancel-button">{% trans "取消" %}</a>
             </li>
         </ul>
     </div>

@@ -23,7 +23,4 @@ except:
     access_key_id = str(baidu_dict["access_key_id"])
     secret_access_key = str(baidu_dict["secret_access_key"])
 
-
-
-
 credentials = BceCredentials(access_key_id, secret_access_key)

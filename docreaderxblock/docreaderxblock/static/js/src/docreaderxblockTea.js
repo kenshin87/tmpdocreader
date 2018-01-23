@@ -277,7 +277,7 @@ function UploadProcessor()
     {
         
         document.getElementById("progress_bar_p_up").style.width = obj.get_percentage(event).toFixed(2) * obj.width + "%";
-        console.log(obj.get_percentage(event).toFixed(2) * obj.width  + "%");
+        //console.log(obj.get_percentage(event).toFixed(2) * obj.width  + "%");
         //document.getElementById("progress_bar_p_up").style.width = obj.get_percentage(event).toFixed(2) * obj.width / 100 + "px";
     }
 
@@ -707,17 +707,17 @@ function testcheckWhetherValidChangeName(event_object)
         'click', 
         //testajax_upload_wrapper
         //ajax_upload_wrapper
-        //wrapper_chooser
-        testwrapper_chooser
+        wrapper_chooser
+        //testwrapper_chooser
     );
 
     function wrapper_chooser(event_object)
     {
         event_object.preventDefault();
-        runtime.notify('save', {state: 'start'});
+
         if ( $("#file")[0].files.length != 0 )
         {
-            $('#baidu_submit').click();
+            baidu_upload_wrapper(event_object);
         }    
         else
         {
@@ -788,7 +788,6 @@ function (event)
             }     
             console.log("passed test"); 
             $('#baidu_submit').click(); 
-
             //event_object.preventDefault();
     }
 

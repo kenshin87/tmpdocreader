@@ -78,7 +78,6 @@ def lms_reverse_wrapper(dict_para):
         "handler": handler,
         "course_id": course_id,
         "usage_id": usage_id,
-
     }
 
     try:
