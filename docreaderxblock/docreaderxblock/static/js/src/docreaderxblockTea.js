@@ -88,7 +88,7 @@ function post_file_to_baidu(element_dict_para)
 
     var element_val_dict = gen_util.transfer_element_to_val(element_dict_para);
 
-    $(".no_upload_warning", element).text("文件正在上传中，请耐心等待。");  
+    $(".no_upload_warning", element).text(gettext("正在上传"));  
     $(".no_upload_warning", element).css("color", "#f11");
 
     var postUrl = runtime.handlerUrl(element, "baidu_upload_proxy");
@@ -164,7 +164,7 @@ function  CSSValidator(sts_obj)
             {
                 event_object.preventDefault();
                 $(".no_upload_warning", element).css("color", "#f11")
-                $(".no_upload_warning", element).text("只支持ppt, excel, word, pdf文件的上传！");
+                $(".no_upload_warning", element).text(gettext("只支持ppt, excel, word, pdf文件的上传！"));
                 return false;
             }
         }     
@@ -181,7 +181,7 @@ function  CSSValidator(sts_obj)
             {
                 event_object.preventDefault();
                 $(".no_upload_warning", element).css("color", "#f11");
-                $(".no_upload_warning", element).text("无法上传大小超过100M的文件!");  
+                $(".no_upload_warning", element).text(gettext("无法上传超过100ｍ的文件!"));  
                 return false;              
             }            
         }
@@ -329,6 +329,7 @@ function UploadProcessor()
         obj.set_bar_P_up_width(event);
         //console.log(obj.get_percentage(event));
     }
+
 
     obj.full_upload = function()
     {
@@ -517,7 +518,7 @@ function check_valid_name(event_object)
     {
         event_object.preventDefault();
         $(".noFileNameWarning", element).css("color", "#f11")
-        $(".noFileNameWarning", element).text("请先更改文档的文件名");
+        $(".noFileNameWarning", element).text(gettext("请先更改文档的文件名"));
         return false;
     }
     return true;
@@ -532,7 +533,7 @@ function testcheck_valid_name(event_object)
     {
         event_object.preventDefault();
         $(".noFileNameWarning", element).css("color", "#f11")
-        $(".noFileNameWarning", element).text("请先更改文档的文件名");
+        $(".noFileNameWarning", element).text(gettext("请先更改文档的文件名"));
         console.log("--testcheckValidName is false");
         return false;
     }
@@ -578,7 +579,7 @@ function checkValidSize(event_object)
         {
             event_object.preventDefault();
             $(".no_upload_warning", element).css("color", "#f11");
-            $(".no_upload_warning", element).text("无法上传大小超过90M的文件!");  
+            $(".no_upload_warning", element).text(gettext("无法上传大小超过90M的文件!"));  
             return false;              
         }            
     }
@@ -596,7 +597,7 @@ function testcheckValidSize(event_object)
         {
             event_object.preventDefault();
             $(".no_upload_warning", element).css("color", "#f11")
-            $(".no_upload_warning", element).text("无法上传大小超过90M的文件!");  
+            $(".no_upload_warning", element).text(gettext("无法上传大小超过90M的文件!"));  
             console.log("--testcheckValidSize is False");
             return false;              
         }            
@@ -621,7 +622,7 @@ function checkValidFormat(event_object)
         {
             event_object.preventDefault();
             $(".no_upload_warning", element).css("color", "#f11")
-            $(".no_upload_warning", element).text("只支持ppt, excel, word, pdf文件的上传！");
+            $(".no_upload_warning", element).text(gettext("只支持ppt, excel, word, pdf文件的上传！"));
             return false;
         }
     }     
@@ -645,7 +646,7 @@ function testcheckValidFormat(event_object)
         {
             event_object.preventDefault();
             $(".no_upload_warning", element).css("color", "#f11")
-            $(".no_upload_warning", element).text("只支持ppt, excel, word, pdf文件的上传！");
+            $(".no_upload_warning", element).text(gettext("只支持ppt, excel, word, pdf文件的上传！"));
             return false;
         }
     }
@@ -856,7 +857,7 @@ function (event)
 
     function postFileToCMS()
     {
-        $(".no_upload_warning", element).text("文件正在上传中，请耐心等待。");  
+        $(".no_upload_warning", element).text(gettext("文件正在上传中，请耐心等待。"));  
         $(".no_upload_warning", element).css("color", "#f11");
         runtime.notify('save', {state: 'start'});
 
@@ -899,7 +900,7 @@ function (event)
 
     function testpostFileToCMS()
     {
-        $(".no_upload_warning", element).text("文件正在上传中，请耐心等待。");  
+        $(".no_upload_warning", element).text(gettext("文件正在上传中，请耐心等待。"));  
         $(".no_upload_warning", element).css("color", "#f11");
         
         runtime.notify('save', {state: 'start'});
@@ -1021,193 +1022,5 @@ function (event)
             }
         )
     }
-
-    // function testfullaccess() 
-    // {
-
-    //     console.log("enter testfullaccess");
-    //     var csrfvalue = parse_cookie_and_get_value('csrftoken');
-    //     var handlerUrl = runtime.handlerUrl(element, "full_access_change_proxy");
-    //     $.ajax
-    //     (
-    //         {
-    //             type: "POST",
-    //             url: handlerUrl,
-    //             data: JSON.stringify({"hello": "world"}),
-    //             beforeSend: function(xhr, settings) 
-    //             {
-    //                 xhr.setRequestHeader("X-CSRFToken", csrfvalue);
-    //             }, 
-
-    //             success: function(responseData)
-    //             {
-    //                 console.log("right situation");
-    //             },
-    //         }
-    //     );
-    // }
-
-    // $(element).find('.full_access_change_proxy').bind(
-    //     'click',
-    //     function() 
-    //     {
-    //         testfullaccess();
-    //     }
-    // );
-
-
-    // function testCountcontent() 
-    // {
-    //     var handlerUrl = runtime.handlerUrl(element, "increment_countcontent");
-    //     $.ajax
-    //     (
-    //         {
-    //             type: "POST",
-    //             url: handlerUrl,
-    //             data: JSON.stringify({"hello": "world"}),
-    //             success: function(responseData)
-    //             {
-    //                 console.log("right situation");
-    //             },
-    //         }
-    //     );
-    // }
-
-    // $(element).find('.increment_countcontent').bind(
-    //     'click',
-    //     function() 
-    //     {
-    //         testCountcontent();
-    //     }
-    // );
-
-    //     function testCountsettings() 
-    //     {
-    //         var handlerUrl = runtime.handlerUrl(element, "increment_countsettings");
-    //         $.ajax
-    //         (
-    //             {
-    //                 type: "POST",
-    //                 url: handlerUrl,
-    //                 data: JSON.stringify({"hello": "world"}),
-    //                 success: function(responseData)
-    //                 {
-    //                     console.log("right situation");
-    //                 },
-    //             }
-    //         );
-    //     }
-
-    // $(element).find('.increment_countsettings').bind(
-    //     'click',
-    //     function() 
-    //     {
-    //         testCountsettings();
-    //     }
-    // );
-
-
-
-    //     function testCountuser_state() 
-    //     {
-    //         var handlerUrl = runtime.handlerUrl(element, "increment_countuser_state");
-    //         $.ajax
-    //         (
-    //             {
-    //                 type: "POST",
-    //                 url: handlerUrl,
-    //                 data: JSON.stringify({"hello": "world"}),
-    //                 success: function(responseData)
-    //                 {
-    //                     console.log("right situation");
-    //                 },
-    //             }
-    //         );
-    //     }
-
-    // $(element).find('.increment_countuser_state').bind(
-    //     'click',
-    //     function() 
-    //     {
-    //         testCountuser_state();
-    //     }
-    // );
-
-    //     function testCountpreferences() 
-    //     {
-    //         var handlerUrl = runtime.handlerUrl(element, "increment_countpreferences");
-    //         $.ajax
-    //         (
-    //             {
-    //                 type: "POST",
-    //                 url: handlerUrl,
-    //                 data: JSON.stringify({"hello": "world"}),
-    //                 success: function(responseData)
-    //                 {
-    //                     console.log("right situation");
-    //                 },
-    //             }
-    //         );
-    //     }
-
-    // $(element).find('.increment_countpreferences').bind(
-    //     'click',
-    //     function() 
-    //     {
-    //         testCountpreferences();
-    //     }
-    // );
-
-
-    // function testCountuser_info() 
-    // {
-    //     var handlerUrl = runtime.handlerUrl(element, "increment_countuser_info");
-    //     $.ajax
-    //     (
-    //         {
-    //             type: "POST",
-    //             url: handlerUrl,
-    //             data: JSON.stringify({"hello": "world"}),
-    //             success: function(responseData)
-    //             {
-    //                 console.log("right situation");
-    //             },
-    //         }
-    //     );
-    // }
-
-    // $(element).find('.increment_countuser_info').bind(
-    //     'click',
-    //     function() 
-    //     {
-    //         testCountuser_info();
-    //     }
-    // );
-
-
-    // function testCountuser_state_summary() 
-    // {
-    //     var handlerUrl = runtime.handlerUrl(element, "increment_countuser_state_summary");
-    //     $.ajax
-    //     (
-    //         {
-    //             type: "POST",
-    //             url: handlerUrl,
-    //             data: JSON.stringify({"hello": "world"}),
-    //             success: function(responseData)
-    //             {
-    //                 console.log("right situation");
-    //             },
-    //         }
-    //     );
-    // }
-
-    // $(element).find('.increment_countuser_state_summary').bind(
-    //     'click',
-    //     function() 
-    //     {
-    //         testCountuser_state_summary();
-    //     }
-    // );
 }
 

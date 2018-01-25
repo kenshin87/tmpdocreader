@@ -1,0 +1,50 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-25 15:17+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: docreaderxblock/static/js/src/docreaderxblockTea.js:91
+msgid "uploading, please be patient。"
+msgstr "docreaderxblock"
+
+#: docreaderxblock/static/js/src/docreaderxblockTea.js:167
+#: docreaderxblock/static/js/src/docreaderxblockTea.js:625
+#: docreaderxblock/static/js/src/docreaderxblockTea.js:649
+msgid "只支持ppt, excel, word, pdf文件的上传！"
+msgstr "docreaderxblockStu"
+
+#: docreaderxblock/static/js/src/docreaderxblockTea.js:184
+msgid "cannot upload a file with the size more than 100 m!"
+msgstr "docreaderxblock"
+
+#: docreaderxblock/static/js/src/docreaderxblockTea.js:521
+#: docreaderxblock/static/js/src/docreaderxblockTea.js:536
+msgid "请先更改文档的文件名"
+msgstr "docreaderxblockStu"
+
+#: docreaderxblock/static/js/src/docreaderxblockTea.js:582
+#: docreaderxblock/static/js/src/docreaderxblockTea.js:600
+msgid "无法上传大小超过90M的文件!"
+msgstr "docreaderxblockStu"
+
+#: docreaderxblock/static/js/src/docreaderxblockTea.js:860
+#: docreaderxblock/static/js/src/docreaderxblockTea.js:903
+msgid "文件正在上传中，请耐心等待。"
+msgstr "docreaderxblockStu"
+
+#~ msgid "无法上传大小超过100M的文件!"
+#~ msgstr "docreaderxblockStu"

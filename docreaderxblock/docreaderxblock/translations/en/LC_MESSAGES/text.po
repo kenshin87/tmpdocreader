@@ -1,0 +1,124 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-25 09:34+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=1;\n"
+
+#: file_helper.py:62
+#, python-brace-format
+msgid "The file must end with the extension '{file_types}'."
+msgid_plural ""
+"The file must end with one of the following extensions: '{file_types}'."
+msgstr[0] ""
+msgstr[1] ""
+
+#: file_helper.py:68
+#, python-brace-format
+msgid "Maximum upload file size is {file_size} bytes."
+msgstr ""
+
+#: static/html/docreaderxblockBaiduFail.html:11
+msgid "转码失败"
+msgstr ""
+
+#: static/html/docreaderxblockBaiduProcessing.html:11
+msgid "正在转码中"
+msgstr ""
+
+#: static/html/docreaderxblockBaiduProcessing.html:12
+msgid ""
+"转码所需时间取决于文件的大小，可能需要数秒钟到10多分钟，请您稍后再回来。"
+msgstr ""
+
+#: static/html/docreaderxblockBaiduUnknown.html:11
+msgid "发生未知错误，请联系管理员"
+msgstr ""
+
+#: static/html/docreaderxblockStu.html:15
+msgid "下载文件"
+msgstr ""
+
+#: static/html/docreaderxblockStu.html:29
+msgid "使用步骤"
+msgstr ""
+
+#: static/html/docreaderxblockStu.html:30
+msgid "1.点击右上角的“编辑”按钮，弹出编辑框；"
+msgstr "docreaderxblockTea"
+
+#: static/html/docreaderxblockStu.html:31
+msgid "2.输入文件名字；"
+msgstr "docreaderxblockTea"
+
+#: static/html/docreaderxblockStu.html:32
+msgid "3.点击“选择文件”按钮，从电脑中选择文件；"
+msgstr "docreaderxblockTea"
+
+#: static/html/docreaderxblockStu.html:33
+msgid "4.确定是否允许学员下载；"
+msgstr "docreaderxblockTea"
+
+#: static/html/docreaderxblockStu.html:34
+msgid "5.点击“保存”按钮,等待上传完毕；"
+msgstr "docreaderxblockTea"
+
+#: static/html/docreaderxblockStu.html:35
+msgid ""
+"6.点击右方的“发布”按钮发布文档，发布后，学员可以在学习系统中看到该文档。"
+msgstr ""
+
+#: static/html/docreaderxblockTea.html:23
+msgid "文件名"
+msgstr ""
+
+#: static/html/docreaderxblockTea.html:45
+msgid "请选择文档文件"
+msgstr ""
+
+#: static/html/docreaderxblockTea.html:52
+msgid "只支持ppt, excel, word, pdf文件的上传"
+msgstr ""
+
+#: static/html/docreaderxblockTea.html:56
+msgid "正在上传"
+msgstr ""
+
+#: static/html/docreaderxblockTea.html:65
+msgid "是否允许文档下载"
+msgstr ""
+
+#: static/html/docreaderxblockTea.html:66
+msgid "允许后，学员将拥有下载文档的权限"
+msgstr ""
+
+#: static/html/docreaderxblockTea.html:71
+#: static/html/docreaderxblockTea.html:75
+msgid "可下载"
+msgstr ""
+
+#: static/html/docreaderxblockTea.html:72
+#: static/html/docreaderxblockTea.html:74
+msgid "不可下载"
+msgstr ""
+
+#: static/html/docreaderxblockTea.html:87
+msgid "保存"
+msgstr ""
+
+#: static/html/docreaderxblockTea.html:90
+msgid "取消"
+msgstr ""
