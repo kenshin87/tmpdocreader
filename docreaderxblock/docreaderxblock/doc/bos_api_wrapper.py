@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-
+import requests
 import time
 import json
 import time
@@ -11,13 +11,14 @@ from baidubce.services.bos.bos_client import BosClient
 from baidubce.bce_client_configuration import BceClientConfiguration
 from baidubce.auth.bce_credentials import BceCredentials
 
-import requests
 
 from .auth_keys import credentials
 from .authorization_generator import get_baidu_time_stamp
 from .authorization_generator import sign
 
+
 from docreaderxblock import reader_settings
+
 
 bos_host = "bj.bcebos.com"
 
@@ -53,7 +54,6 @@ def upload_file_to_bos(dict_obj):
         returned_str = bos_client.put_object_from_file(bucket_name, file_name, abs_path)
         return True
     except Exception as e:
-        print e
         return False
 
 def check_file_from_bos(dict_obj):
@@ -96,12 +96,6 @@ def get_bos_blob(dict_para):
         bucket_name = bucket_name
 
     file_name = dict_para["file_name"]
-
-    print bucket_name
-    print file_name
-
-    #bucket_name = "testing-yingli"
-    #file_name = "1516156204551150048.pdf"
 
     host = bucket_name + ".bj.bcebos.com"
 
@@ -158,7 +152,7 @@ def get_sts(dict_para):
     except:
         raise ValueError
     try:
-        permission  = dict_para["permission"]
+        permission = dict_para["permission"]
     except:
         permission = ["READ", "LIST", "WRITE"]
 
@@ -202,8 +196,6 @@ def get_sts(dict_para):
         'host': "sts.bj.baidubce.com",
         "content-length": length,
     }
-
-    gmtTime = get_baidu_time_stamp()
     response = requests.request("POST", url, data=data, headers=headers)
 
     return response.text

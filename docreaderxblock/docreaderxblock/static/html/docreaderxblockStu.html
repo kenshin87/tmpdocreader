@@ -1,5 +1,16 @@
 {% load i18n %}
 
+<!-- 
+    The logic here has been changed from dynamic url to currently the static literal strings due to a unsolvable requirement(There being a dynamic url with a non-dynamic field). So now it is as following:
+
+        there are only 2 status of the document here. 
+
+            1. The first one is when the document has     been uploaded, in this case, we get a True  "has_doc".
+            2. the second    is when the document has not been uploaded, in this case, we get a False "has_doc".
+
+        When true, then there must be a baidu_doc_id, and what we need to do is to render the document specified by this id. Since now we implement the functionality using an iframe, so the url of it when viewed from Studio, is different from that from LMS, this is the reason why we want to use a "baidu_view_proxy_url_common" variable instead of a "baidu_view_proxy_url_stu" or "baidu_view_proxy_url_tea" variable.
+ -->
+
 {% if has_doc %}
     <iframe src= "{{baidu_view_proxy_url_common}}"  style = "width:100%;height:750px;">
     </iframe>
@@ -16,29 +27,62 @@
                     </a>
                 </p>
             {% endif %}
-        <!--
-            This is for reading the page on the second page.
-         <p><a class = "open_baidu_reader" href =  target = "_blank">阅读文件</a></p> 
-        -->
+        
     </div>
 
 {% else %}
-
-
-
-<h4 class="hd hd-3 problem-header">{% trans "使用步骤" %}</h4>
-<p>{% trans "1.点击右上角的“编辑”按钮，弹出编辑框；" %}</p>
-<p>{% trans "2.输入文件名字；" %}</p>
-<p>{% trans "3.点击“选择文件”按钮，从电脑中选择文件；" %}</p>
-<p>{% trans "4.确定是否允许学员下载；" %}</p>
-<p>{% trans "5.点击“保存”按钮,等待上传完毕；" %}</p>
-<p>{% trans "6.点击右方的“发布”按钮发布文档，发布后，学员可以在学习系统中看到该文档。" %}</p>
-
-
+    <h4 class="hd hd-3 problem-header">{% trans "使用步骤" %}</h4>
+    <p>{% trans "1.点击右上角的“编辑”按钮，弹出编辑框；" %}</p>
+    <p>{% trans "2.输入文件名字；" %}</p>
+    <p>{% trans "3.点击“选择文件”按钮，从电脑中选择文件；" %}</p>
+    <p>{% trans "4.确定是否允许学员下载；" %}</p>
+    <p>{% trans "5.点击“保存”按钮,等待上传完毕；" %}</p>
+    <p>{% trans "6.点击右方的“发布”按钮发布文档，发布后，学员可以在学习系统中看到该文档。" %}</p>
 {% endif %}  
 
-<input class = "system_generated_random_name_extension" value = {self.system_generated_random_name_extension} hidden/>
-<input  value = "{self.CMS_ROOT_URL}" hidden/>
+
+<!-- <input class = "system_generated_random_name_extension" value = {self.system_generated_random_name_extension} hidden/> -->
+<!-- <input  value = "{self.CMS_ROOT_URL}" hidden/> -->
+
+
+
+<!-- please don't delete the following codes since it will make debugging incredibly diffcult. -->
+
+
+<!-- 
+{% if has_doc %}
+    <iframe src= "{{baidu_view_proxy_url_common}}"  style = "width:100%;height:750px;">
+    </iframe>
+
+    <div>
+        <input class = "baidu_processing_status" type = "text" value = {self.baidu_processing_status} hidden />
+        <input type = "text" class = "baidu_doc_id_input" value = {self.baidu_doc_id} hidden>   
+            {% if allow_download %}
+                <p>
+                    <a class = "download_link" 
+                        href = {self.download_link_tea}  
+                        download = {self.system_generated_random_name_extension}>
+                        {% trans "下载文件" %}
+                    </a>
+                </p>
+            {% endif %}
+        
+            This is for reading the page on the second page.
+         <p><a class = "open_baidu_reader" href =  target = "_blank">阅读文件</a></p> 
+        
+    </div>
+
+{% else %}
+    <h4 class="hd hd-3 problem-header">{% trans "使用步骤" %}</h4>
+    <p>{% trans "1.点击右上角的“编辑”按钮，弹出编辑框；" %}</p>
+    <p>{% trans "2.输入文件名字；" %}</p>
+    <p>{% trans "3.点击“选择文件”按钮，从电脑中选择文件；" %}</p>
+    <p>{% trans "4.确定是否允许学员下载；" %}</p>
+    <p>{% trans "5.点击“保存”按钮,等待上传完毕；" %}</p>
+    <p>{% trans "6.点击右方的“发布”按钮发布文档，发布后，学员可以在学习系统中看到该文档。" %}</p>
+{% endif %}   
+-->
+
 
 <!-- 
     <input class="input setting-input baidu_doc_id" value= {self.baidu_doc_id} type="text" hidden>

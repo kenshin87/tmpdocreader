@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 """TO-DO: Write a description of what this XBlock is."""
-
-import pkg_resources
-from xblock.core import XBlock
-from xblock.fields import Scope, Integer, String, Boolean
-from xblock.fragment import Fragment
-
 import os
 import urlparse
 import json
 import time
 import random
 from functools import partial
+
+
+import pkg_resources
+from xblock.core import XBlock
+from xblock.fields import Scope, Integer, String, Boolean
+from xblock.fragment import Fragment
+
 
 from webob.response import Response
 from django.shortcuts import render
@@ -660,14 +661,18 @@ class DocReaderXBlock(XBlock):
 
     @XBlock.handler
     def baidu_upload_proxy(self, data, suffix=''):
-
         # if it can reach this point, then it mean that the file has been successfully uploaded.
+        """
+            The function handles the logic of directly uploading a file to baidu server.
+        Notice that the size checking and file extention check is not here but implemented in the JavaScript file.
+        """
+
         upload_status = False
         bos_status = True
         doc_status = False
 
         try:
-            #1. first we store the info by user
+
             allow_download = data.POST.get("allow_download")
             user_defined_name = data.POST.get("user_defined_name")
             python_random_name = data.POST.get("python_random_name")
@@ -733,6 +738,10 @@ class DocReaderXBlock(XBlock):
     @XBlock.handler
     def upload_proxy(self, data, suffix=''):
 
+        """
+            This handles the logic of intermiediate uploading.
+        """
+
         upload_status = False
         bos_status = False
         doc_status = False
@@ -785,7 +794,6 @@ class DocReaderXBlock(XBlock):
         except:
             pass
 
-        #v1
         baidu_view_proxy_url_tea = self.get_baidu_view_proxy_link()
         dict_obj = {
             "baidu_view_proxy_url_tea": baidu_view_proxy_url_tea,
@@ -817,31 +825,38 @@ class DocReaderXBlock(XBlock):
     @XBlock.handler
     def full_access_change_proxy(self, data, suffix=''):
 
+        """
+            This is for showing that all the field of the xblock, and it shows that all the field of a xblock cannot be shared across lms and studio.
+            In this case, we need to use 2 variable to store a piece of info.
+        """
+
         self.countcontent += 1
         self.countpreferences += 1
         self.countsettings += 1
         self.countuser_state += 1
         return Response(json_body={1: 2})
 
-        return None
-
     @XBlock.handler
     def download_proxy(self, data, suffix=''):
+        """
+            A function handling the local downloading.
+        """
         file_url = self.system_generated_random_name_extension
         dict_obj = {
             "file_name": file_url,
         }
         dict_obj = FileStoreAPI.get_file_info_dict_static(dict_obj)
-
         return UploadDownloadAPI.download(data, dict_obj)
 
     @XBlock.handler
     def baidu_view_proxy(self, data, suffix=''):
-
+        """
+            When we enters this variable, there must be a valid non-empty {self.baidu_doc_id} here.
+        And here we try to use a template to render the baidu doc view based on this {self.baidu_doc_id}
+        """
         dict_obj = {
             "baidu_doc_id": self.baidu_doc_id,
         }
-
         baidu_processing_status = DocWrapper.status_by_doc_id(dict_obj)
 
         if baidu_processing_status == "PUBLISHED":
@@ -857,7 +872,7 @@ class DocReaderXBlock(XBlock):
             html = self.render_template("static/html/docreaderxblockBaiduFail.html")
             return Response(body=html)
         else:
-            html = self.render_template("static/html/docreaderxblockBaiduFail.html")
+            html = self.render_template("static/html/docreaderxblockBaiduUnknown.html")
             return Response(body=html)
 
     @XBlock.json_handler
@@ -873,9 +888,13 @@ class DocReaderXBlock(XBlock):
 
     @XBlock.json_handler
     def initiate_address(self, data, suffix=''):
+
         assert data['hello'] == 'world'
         self.baidu_view_proxy_url_stu = data["baidu_view_proxy_url"]
-        return {"baidu_view_proxy_url": self.baidu_view_proxy_url_stu}
+
+        return {
+            "baidu_view_proxy_url": self.baidu_view_proxy_url_stu
+        }
 
 
 

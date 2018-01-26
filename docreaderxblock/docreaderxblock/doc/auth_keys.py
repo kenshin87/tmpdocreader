@@ -1,9 +1,12 @@
-from baidubce.auth.bce_credentials import BceCredentials
-from django.conf import settings
 import os
+from django.conf import settings
+from baidubce.auth.bce_credentials import BceCredentials
+
+
 
 """
-    Baidu AK and SK should be placed inside settings.py. If they are absent, then use the value inside "except" which is read from "keys.json"
+        Baidu AK and SK should be placed inside settings.py. If they are absent, then it tries to read the value
+    inside "except block" which is read from "keys.json"
 """
 
 try:
@@ -11,7 +14,6 @@ try:
     secret_access_key = settings.BAIDU_SK
 except:
     import json
-
     path = os.path.join(os.getcwd(), "docreaderxblock/docreaderxblock/doc/keys.json")
     if not os.path.isfile(path):
         path = os.path.join(os.path.dirname(os.getcwd()), "docreaderxblock/docreaderxblock/doc/keys.json")

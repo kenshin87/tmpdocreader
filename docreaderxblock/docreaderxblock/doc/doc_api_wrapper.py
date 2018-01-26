@@ -121,8 +121,6 @@ class DocWrapper(object):
         )
 
         url = "https://" + host + "/v2/document"
-        # url = "http://127.0.0.1:80/v2/document"
-
 
         gmtTime = get_baidu_time_stamp()
         response = requests.post(url, params=requestDict["params"], data=data, headers=headers)

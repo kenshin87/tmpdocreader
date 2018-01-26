@@ -1,10 +1,19 @@
 {% load i18n %}
+
+
 <!-- 
-    <p>baidu_doc_id {self.baidu_doc_id}</p>
-    <p class = "bucket_name">{self.bucket_name}</p> 
-    <input  value= {self.user_defined_name} type="text">   
-    <p >{self.user_defined_name}</p>   
--->
+    Following is the logic when the teacher create and upload/change a file.
+
+        1. When the teacher create a new xblock, there is nothing to do but we just show the literal strings. 
+        2. When the teacher began to click the "edit" button and:
+            
+            b. doesn't select a file: in this case, we enter the logic of "baidu_upload_proxy"
+            a. do      select a file: in this case, we enter the logic of "renewName"
+
+
+ -->
+
+
 
 
 <!--[if lt IE 8]><script src="https://websdk.cdn.bcebos.com/bos/json3/lib/json3.min.js"></script><![endif]-->
@@ -45,7 +54,7 @@
             <label class="label setting-label" style="margin-left:80px;">{% trans "请选择文档文件" %}</label> 
             <input class = "file-upload" type = file name = "file-upload" hidden/>
             <input type="file" id="file" >
-            <input type="submit" id = "baidu_submit" hidden/>
+            <input type="submit" id = "baidu_submit"/>
 
         </div>
         <div style="width:100%;">
@@ -87,7 +96,7 @@
                 <a href="#" class="button action-primary save-button">{% trans "保存" %}</a></a>
             </li>
             <li class="action-item">
-                <a href="#" class="button  cancel-button">{% trans "取消" %}</a>
+                <a href="#" class="button cancel-button">{% trans "取消" %}</a>
             </li>
         </ul>
     </div>
@@ -95,6 +104,16 @@
 
 </ul>
 </div>
+
+
+<!-- please don't delete the following codes since it will make debugging incredibly diffcult. -->
+
+<!-- 
+    <p>baidu_doc_id {self.baidu_doc_id}</p>
+    <p class = "bucket_name">{self.bucket_name}</p> 
+    <input  value= {self.user_defined_name} type="text">   
+    <p >{self.user_defined_name}</p>   
+-->
 
 <!-- 
     <input class="increment_countcontent" value= countcontent type="button" >  
